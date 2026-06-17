@@ -38,6 +38,11 @@ const AddTransactionForm = ({
   categories,
   editMode = false,
   initialData = null,
+}: {
+  accounts: any[];
+  categories: any[];
+  editMode?: boolean;
+  initialData?: any;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -79,17 +84,17 @@ const AddTransactionForm = ({
     loading: transactionLoading,
     fn: transactionFn,
     data: transactionResult,
-  } = useFetch(editMode ? updateTransaction : createTransaction);
+  } = useFetch(editMode ? updateTransaction : createTransaction) as any;
   const type = watch("type");
   const isRecurring = watch("isRecurring");
   const date = watch("date");
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     const formData = {
       ...data,
       amount: parseInt(data.amount),
     };
     if (editMode) {
-      transactionFn(editId, formData);
+      transactionFn(editId!, formData);
     } else {
       transactionFn(formData);
     }
@@ -109,7 +114,7 @@ const AddTransactionForm = ({
   const filteredCategories = categories.filter(
     (category) => category.type === type,
   );
-  const handleScanComplete = (scannedData) => {
+  const handleScanComplete = (scannedData: any) => {
     if (scannedData) {
       setValue("amount", scannedData.amount.toString());
       setValue("date", new Date(scannedData.date));
@@ -141,7 +146,9 @@ const AddTransactionForm = ({
           </SelectContent>
         </Select>
         {errors.type && (
-          <p className="text-sm text-red-500 ">{errors.type.message}</p>
+          <p className="text-sm text-red-500">
+            {errors.type?.message?.toString()}
+          </p>
         )}
       </div>
       <div className="grid gap-6 md:grid-cols-2">
@@ -154,7 +161,9 @@ const AddTransactionForm = ({
             {...register("amount")}
           />
           {errors.amount && (
-            <p className="text-sm text-red-500 ">{errors.amount.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.amount?.message?.toString()}
+            </p>
           )}
         </div>
         <div className="space-y-2">
@@ -186,7 +195,9 @@ const AddTransactionForm = ({
           </Select>
 
           {errors.accountId && (
-            <p className="text-sm text-red-500">{errors.accountId.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.accountId?.message?.toString()}
+            </p>
           )}
         </div>
         <div className="space-y-2">
@@ -210,7 +221,9 @@ const AddTransactionForm = ({
           </Select>
 
           {errors.category && (
-            <p className="text-sm text-red-500">{errors.category.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.category?.message?.toString()}
+            </p>
           )}
         </div>
         <div className="space-y-2">
@@ -239,20 +252,23 @@ const AddTransactionForm = ({
             </PopoverContent>
           </Popover>
           {errors.date && (
-            <p className="text-sm text-red-500">{errors.date.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.data?.message?.toString()}
+            </p>
           )}
         </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium"> Description</label>
-        <Input placeholder="Enter description" {...register("description")}>
-          {errors.description && (
-            <p className="text-sm text-red-500 ">
-              {errors.description.message}
-            </p>
-          )}
-        </Input>
+        <label className="text-sm font-medium">Description</label>
+
+        <Input placeholder="Enter description" {...register("description")} />
+
+        {errors.description && (
+          <p className="text-sm text-red-500">
+            {String(errors.description.message)}
+          </p>
+        )}
       </div>
       <div>
         <div
@@ -293,7 +309,7 @@ const AddTransactionForm = ({
           </Select>
           {errors.recurringInterval && (
             <p className="text-sm text-red-500 ">
-              {errors.recurringInterval.message}
+              {String(errors.recurringInterval?.message)}
             </p>
           )}
         </div>

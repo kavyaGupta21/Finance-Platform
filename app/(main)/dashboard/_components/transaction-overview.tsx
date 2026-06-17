@@ -32,7 +32,13 @@ const COLORS = [
   "#9FA8DA",
 ];
 
-export function DashboardOverview({ accounts, transactions }) {
+export function DashboardOverview({
+  accounts,
+  transactions,
+}: {
+  accounts: any[];
+  transactions: any[];
+}) {
   const [selectedAccountId, setSelectedAccountId] = useState(
     accounts.find((a) => a.isDefault)?.id || accounts[0]?.id,
   );
@@ -44,9 +50,8 @@ export function DashboardOverview({ accounts, transactions }) {
 
   // Get recent transactions (last 5)
   const recentTransactions = accountTransactions
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
-
   // Calculate expense breakdown for current month
   const currentDate = new Date();
   const currentMonthExpenses = accountTransactions.filter((t) => {

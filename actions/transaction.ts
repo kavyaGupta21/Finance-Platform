@@ -130,7 +130,7 @@ function calculateNextRecurringDate(
   return date;
 }
 
-export async function scanReceipt(file) {
+export async function scanReceipt(file:File) {
   try {
     const model = genAI.getGenerativeModel({
       model: "gemini-2.0-flash",
@@ -195,7 +195,7 @@ export async function scanReceipt(file) {
   }
 }
 
-export async function getTransaction(id)
+export async function getTransaction(id:string)
 {
  const {userId}=await auth();
  if(!userId) throw new Error("Unauthorized"); 
@@ -214,7 +214,7 @@ export async function getTransaction(id)
 
   return serializeAmount(transaction);
 }
-export async function updateTransaction(id, data) {
+export async function updateTransaction(id:string, data:any) {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");

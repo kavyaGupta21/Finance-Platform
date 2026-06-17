@@ -100,7 +100,7 @@ export const triggerRecurringTransactions=inngest.createFunction(
       {
         return await db.transaction.findMany({
           where:{
-            isRecurring:true,
+            recurring:true,
             status:"COMPLETED",
              OR: [
               { lastProcessed: null },
@@ -140,7 +140,7 @@ export const processRecurringTransaction = inngest.createFunction(
     },
   },
 
-  async ({ event, step }) => {
+  async ({ event, step }:any) => {
     // Validate event data
     if (!event?.data?.transactionId || !event?.data?.userId) {
       console.error("Invalid event data:", event);
@@ -163,18 +163,18 @@ export const processRecurringTransaction = inngest.createFunction(
       // Create new transaction and update account balance in a transaction
       await db.$transaction(async (tx) => {
         // Create new transaction
-        await tx.transaction.create({
-          data: {
-            type: transaction.type,
-            amount: transaction.amount,
-            description: `${transaction.description} (Recurring)`,
-            date: new Date(),
-            category: transaction.category,
-            userId: transaction.userId,
-            accountId: transaction.accountId,
-         isRecurring: true,
-          },
-        });
+       await tx.transaction.create({
+  data: {
+    type: transaction.type,
+    amount: transaction.amount,
+    description: `${transaction.description} (Recurring)`,
+    date: new Date(),
+    category: transaction.category,
+    userId: transaction.userId,
+    accountId: transaction.accountId,
+    recurring: true,
+  },
+});
 
         // Update account balance
         const balanceChange =
@@ -194,7 +194,7 @@ export const processRecurringTransaction = inngest.createFunction(
             lastProcessed: new Date(),
             nextRecurringDate: calculateNextRecurringDate(
               new Date(),
-              transaction.recurringInterval
+              transaction.recurringInterval ?? "MONTHLY"
             ),
           },
         });
@@ -202,7 +202,7 @@ export const processRecurringTransaction = inngest.createFunction(
     });
   }
 );
-function calculateNextRecurringDate(date, interval) {
+function calculateNextRecurringDate(date:Date, interval:string) {
   const next = new Date(date);
   switch (interval) {
     case "DAILY":
@@ -221,7 +221,7 @@ function calculateNextRecurringDate(date, interval) {
   return next;
 }
 
-async function getMonthlyStats(userId, month) {
+async function getMonthlyStats(userId:string, month:Date) {
   const startDate = new Date(month.getFullYear(), month.getMonth(), 1);
   const endDate = new Date(month.getFullYear(), month.getMonth() + 1, 0);
 
@@ -236,7 +236,15 @@ async function getMonthlyStats(userId, month) {
   });
 
   return transactions.reduce(
-    (stats, t) => {
+  (
+    stats: {
+      totalExpenses: number;
+      totalIncome: number;
+      byCategory: Record<string, number>;
+      transactionCount: number;
+    },
+    t
+  ) => {
       const amount = t.amount.toNumber();
       if (t.type === "EXPENSE") {
         stats.totalExpenses += amount;
@@ -255,8 +263,22 @@ async function getMonthlyStats(userId, month) {
     }
   );
 }
-async function generateFinancialInsights(stats, month) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+async function generateFinancialInsights(
+  stats: {
+    totalIncome: number;
+    totalExpenses: number;
+    byCategory: Record<string, number>;
+    transactionCount: number;
+  },
+  month: string
+) {
+const apiKey = process.env.GEMINI_API_KEY;
+
+if (!apiKey) {
+  throw new Error("GEMINI_API_KEY is missing");
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
@@ -292,7 +314,7 @@ async function generateFinancialInsights(stats, month) {
     ];
   }
 }
-function isTransactionDue(transaction) {
+function isTransactionDue(transaction:any) {
   // If no lastProcessed date, transaction is due
   if (!transaction.lastProcessed) return true;
 
@@ -340,7 +362,7 @@ export const generateMonthlyReports = inngest.createFunction(
           to: user.email,
           subject: `Your Monthly Financial Report - ${monthName}`,
           react: EmailTemplate({
-            userName: user.name,
+            userName: user.name ??"User",
             type: "monthly-report",
             data: {
               stats,
