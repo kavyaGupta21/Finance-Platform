@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  clerkUserId  String        @unique
+  email        String        @unique
+  name         String?
+  imageUrl     String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  accounts     Account[]
+  budgets      Budget[]
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+model Account {
+  id           String        @id(map: "Account_pkey") @default(uuid())
+  name         String
+  type         AccountType
+  balance      Decimal       @default(0)
+  isDefault    Boolean       @default(false)
+  userId       String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id], map: "Account_userId_fkey")
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+model Transaction {
+  id                String             @id(map: "Transaction_pkey") @default(uuid())
+  amount            Decimal
+  description       String?
+  category          String
+  recurring         Boolean            @default(false)
+  recurringInterval RecurringInterval?
+  status            TransactionStatus  @default(COMPLETED)
+  accountId         String
+  userId            String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  date              DateTime
+  type              TransactionType
+  lastProcessed     DateTime?
+  nextRecurringDate DateTime?
+  account           Account            @relation(fields: [accountId], references: [id], map: "Transaction_accountId_fkey")
+  user              User               @relation(fields: [userId], references: [id], map: "Transaction_userId_fkey")
+
+  @@map("transactions")
+}
+
+model Budget {
+  id            String    @id(map: "Budget_pkey") @default(uuid())
+  amount        Decimal
+  category      String
+  userId        String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastAlertSent DateTime?
+  user          User      @relation(fields: [userId], references: [id], map: "Budget_userId_fkey")
+
+  @@map("budgets")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum AccountType {
+  CURRENT
+  SAVINGS
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum RecurringInterval {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
