@@ -14,6 +14,7 @@ const aj = arcjet({
   rules: [
     // Shield protection for content and security
     shield({
+
       mode: "LIVE",
     }),
     detectBot({

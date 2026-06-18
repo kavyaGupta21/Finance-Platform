@@ -1,4 +1,5 @@
-﻿import CreateAccountDrawer from "@/components/create-account-drawer";
+﻿export const dynamic = "force-dynamic";
+import CreateAccountDrawer from "@/components/create-account-drawer";
 import { Card, CardContent } from "@/components/ui/card";
 import React, { Suspense } from "react";
 import { Plus } from "lucide-react";
