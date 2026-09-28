@@ -49,8 +49,8 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: #030712;
+  --foreground: #f8fafc;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -123,6 +123,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #030712;
   }
   html {
     @apply font-sans;
@@ -180,6 +181,49 @@
 
 .hero-sec-wrapper {
   perspective: 800px;
+}
+
+.page-background {
+  background: #030712;
+  background-image:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(124, 58, 237, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(59, 130, 246, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      700px 500px at -10% -10%,
+      rgba(124, 58, 237, 0.15),
+      transparent 70%
+    ),
+    radial-gradient(
+      600px 400px at 110% 110%,
+      rgba(59, 130, 246, 0.08),
+      transparent 70%
+    );
+  background-repeat: no-repeat;
+}
+
+.page-background::after {
+  content: "";
+  position: absolute;
+  left: 52%;
+  bottom: -8rem;
+  width: 18rem;
+  height: 15rem;
+  pointer-events: none;
+  opacity: 0.7;
+  background-image: radial-gradient(
+    rgba(124, 58, 237, 0.7) 1px,
+    transparent 1px
+  );
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to top, black, transparent 75%);
 }
 
 .hero-image {

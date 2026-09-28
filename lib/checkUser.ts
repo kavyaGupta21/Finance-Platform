@@ -9,31 +9,27 @@ export const checkUser = async () => {
     return null;
   }
 
-  try {
-    const loggedUser = await db.user.findUnique({
-      where: {
-        clerkUserId: user.id,
-      },
-    });
+  const name = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
+  const email = user.emailAddresses[0]?.emailAddress;
 
-    if (loggedUser) {
-      return loggedUser;
-    }
-
-    const name = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
-
-    const newUser = await db.user.create({
-      data: {
-        clerkUserId: user.id,
-        name,
-        imageUrl: user.imageUrl,
-        email: user.emailAddresses[0]?.emailAddress || "",
-      },
-    });
-
-    return newUser;
-  } catch (error) {
-    console.log("User creation error:", error);
-    return null;
+  if (!email) {
+    throw new Error("Authenticated Clerk user has no email address");
   }
+
+  return db.user.upsert({
+    where: {
+      clerkUserId: user.id,
+    },
+    update: {
+      name,
+      imageUrl: user.imageUrl,
+      email,
+    },
+    create: {
+      clerkUserId: user.id,
+      name,
+      imageUrl: user.imageUrl,
+      email,
+    },
+  });
 };

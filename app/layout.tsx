@@ -28,7 +28,7 @@ export default function RootLayout({
           <main className="min-h-screen">{children}</main>
           <Toaster richColors />
           {/* footer */}
-          <footer className="bg-gray-950 py-12 text-center">
+          <footer className="bg-[#030712] py-12 text-center">
             <div className="container mx-auto px-4  text-center   text-white">
               <p>Made with ❤️ by Kavya Gupta</p>
             </div>

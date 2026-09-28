@@ -21,7 +21,7 @@ async function DashboardPage() {
   }
   const transactions = await getDashboardData();
   return (
-    <div className="px-5">
+    <div className="space-y-5 px-5 bg-black">
       {/* Budget Progress */}
       {defaultAccount && (
         <BudgetProgress
@@ -39,13 +39,13 @@ async function DashboardPage() {
       {/* Recent Transactions */}
 
       {/* Account Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 ">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 ">
         <CreateAccountDrawer>
           <button type="button" className="w-full">
-            <Card className="flex flex-col items-center justify-center border-dashed border-2 border-slate-400 h-40 cursor-pointer shadow-md hover:shadow-fuchsia-400 transition-shadow">
-              <CardContent>
+            <Card className="flex flex-col items-center justify-center border-dashed border-2 border-slate-400 h-40 cursor-pointer  shadow-2xl hover:shadow-indigo-500 transition-shadow">
+              <CardContent className="flex flex-col items-center justify-center gap-2">
                 <Plus className="h-10 w-10 mb-2" />
-                <p className="text-sm font-bold">Add new Account</p>
+                <p className="text-sm font-bold ">Add new Account</p>
               </CardContent>
             </Card>
           </button>

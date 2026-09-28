@@ -29,9 +29,11 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Loader2 } from "lucide-react";
 import { createAccount } from "@/actions/dashboard";
+import { useRouter } from "next/navigation";
 
 const CreateAccountDrawer = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -58,12 +60,17 @@ const CreateAccountDrawer = ({ children }: { children: React.ReactNode }) => {
   } = useFetch(createAccount);
 
   useEffect(() => {
-    if (newAccount && !createAccountLoading) {
+    if (newAccount?.success && !createAccountLoading) {
       toast.success("Account created successfully!");
       reset();
       setOpen(false);
+      router.refresh();
+    } else if (newAccount && !createAccountLoading) {
+      toast.error(
+        newAccount.error || "Failed to create account. Please try again.",
+      );
     }
-  }, [createAccountLoading, newAccount, reset]);
+  }, [createAccountLoading, newAccount, reset, router]);
 
   useEffect(() => {
     if (error) {

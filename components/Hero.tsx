@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 const HeroSection = () => {
@@ -23,8 +22,8 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="pb-20 px-4 bg-black text-white">
-      <div className="container mx-auto text-center">
+    <div className="hero-section relative z-10 pb-20 px-4 text-white">
+      <div className="container relative z-10 mx-auto text-center">
         <h1 className="text-6xl md:text-8xl lg:text-[105px] pb-6 gradient-title">
           Welcome To AI Finance Platform{" "}
         </h1>

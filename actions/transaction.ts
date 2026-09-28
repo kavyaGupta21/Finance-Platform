@@ -133,7 +133,7 @@ function calculateNextRecurringDate(
 export async function scanReceipt(file:File) {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.8-flash",
     });
     //convert file to arraybuffer
     const arrayBuffer = await file.arrayBuffer();

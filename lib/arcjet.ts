@@ -10,7 +10,7 @@ const aj = arcjet({
   characteristics: ["userId"],
   rules: [
     tokenBucket({
-      mode: "LIVE",
+      mode: process.env.NODE_ENV === "production" ? "LIVE" : "DRY_RUN",
       refillRate: 2,
       interval: 3600,
       capacity: 2,

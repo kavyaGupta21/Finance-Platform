@@ -5,8 +5,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardAction,
   CardFooter,
 } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
@@ -16,7 +14,15 @@ import { updateDefaultAccount } from "@/actions/accounts";
 import useFetch from "@/hooks/use-fetch";
 import { toast } from "sonner";
 
-const AccountCard = ({ account }: { account: any }) => {
+type AccountCardData = {
+  id: string;
+  name: string;
+  type: string;
+  balance: number;
+  isDefault: boolean;
+};
+
+const AccountCard = ({ account }: { account: AccountCardData }) => {
   const { name, type, balance, id, isDefault } = account;
   const {
     loading: updateDefaultLoading,
@@ -51,19 +57,8 @@ const AccountCard = ({ account }: { account: any }) => {
     }
   }, [error]);
   return (
-    <Link href={`/account/${id}`} className="block">
-      <Card className="gradient-card h-full shadow-md hover:shadow-fuchsia-400 transition-shadow group relative cursor-pointer">
-        <div
-          className="absolute top-5 right-5 z-10"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Switch
-            checked={isDefault}
-            onClick={handleDefaultChange}
-            disabled={updateDefaultLoading}
-          />
-        </div>
-
+    <Card className="gradient-card group relative h-full cursor-pointer shadow-md transition-shadow hover:shadow-fuchsia-400">
+      <Link href={`/account/${id}`} className="block h-full">
         <CardHeader className="pb-5 text-purple-200">
           <CardTitle className="text-sm font-medium capitalize">
             {name}
@@ -72,7 +67,7 @@ const AccountCard = ({ account }: { account: any }) => {
 
         <CardContent>
           <div className="text-2xl font-bold text-[#F8F5FF]">
-            ${parseFloat(balance).toFixed(2)}
+            ${Number(balance).toFixed(2)}
           </div>
 
           <p className="text-xs text-[#C8B6FF]">
@@ -91,8 +86,18 @@ const AccountCard = ({ account }: { account: any }) => {
             Expense
           </div>
         </CardFooter>
-      </Card>
-    </Link>
+      </Link>
+      <div
+        className="absolute top-5 right-5 z-10"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <Switch
+          checked={isDefault}
+          onClick={handleDefaultChange}
+          disabled={updateDefaultLoading}
+        />
+      </div>
+    </Card>
   );
 };
 

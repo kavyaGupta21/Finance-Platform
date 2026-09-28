@@ -18,9 +18,9 @@ import Link from "next/dist/client/link";
 
 export default function Home() {
   return (
-    <div className="mt-40">
+    <div className="page-background relative isolate mt-40 overflow-hidden">
       <HeroSection />
-      <section className="py-20 bg-black">
+      <section className="relative z-10 py-20">
         <div className=" container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {statsData.map((statsData, index) => (
@@ -52,7 +52,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="py-20 bg-gray-800">
+      <section className="relative z-10 py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-16 text-white">
             Everything you need to manage your finances
@@ -99,7 +99,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="py-20 bg-gray-800">
+      <section className="relative z-10 py-20">
         <div className="container mx-auto px-4 text-center ">
           <h2 className="text-3xl font-bold text-center mb-4 text-white">
             Join thousands of satisfied users with our finance management
